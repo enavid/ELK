@@ -76,8 +76,6 @@ services:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     expose:
       - "9090"
-    ports:
-      - "9090:9090"
     networks:
       - elk
 
