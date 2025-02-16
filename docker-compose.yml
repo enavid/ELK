@@ -3,7 +3,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     container_name: elasticsearch-master
     volumes:
-      - ./config/elasticsearch/elasticsearch-master.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./config/elasticsearch/master-node.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - "9200:9200"
     networks:
@@ -17,7 +17,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     container_name: elasticsearch-data-1
     volumes:
-      - ./config/elasticsearch/elasticsearch-data-1.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./config/elasticsearch/data-node-1.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - elk
     deploy:
@@ -29,7 +29,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     container_name: elasticsearch-data-2
     volumes:
-      - ./config/elasticsearch/elasticsearch-data-2.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./config/elasticsearch/data-node-2.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - elk
     deploy:
