@@ -1,14 +1,15 @@
 services:
-  elasticsearch-master-1:
+  es-master-1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
-    container_name: elasticsearch-master-1
+    container_name: es-master-1
     restart: always
     environment:
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
-      - elasticsearch_master_1:/usr/share/elasticsearch
+      - es-master-data-1:/usr/share/elasticsearch/data
+      - es-master-logs-1:/usr/share/elasticsearch/logs
     configs:
-      - source: elasticsearch_master_1_config
+      - source: es-master-1-config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     expose:
       - "9200"
@@ -23,16 +24,17 @@ services:
           memory: 1g
           cpus: '1'
 
-  elasticsearch-data-1:
+  es-data-1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
-    container_name: elasticsearch-data-1
+    container_name: es-data-1
     restart: always
     environment:
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
-      - elasticsearch_data_1:/usr/share/elasticsearch
+      - es-data-data-1:/usr/share/elasticsearch/data
+      - es-data-logs-1:/usr/share/elasticsearch/logs
     configs:
-      - source: elasticsearch_data_1_config
+      - source: es-data-1-config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     expose:
       - "9200"
@@ -45,16 +47,17 @@ services:
           memory: 1g
           cpus: '1'
 
-  elasticsearch-data-2:
+  es-data-2:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
-    container_name: elasticsearch-data-2
+    container_name: es-data-2
     restart: always
     environment:
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
-      - elasticsearch_data_2:/usr/share/elasticsearch
+      - es-data-data-2:/usr/share/elasticsearch/data
+      - es-data-logs-2:/usr/share/elasticsearch/logs
     configs:
-    - source: elasticsearch_data_2_config
+    - source: es-data-2-config
       target: /usr/share/elasticsearch/config/elasticsearch.yml
     expose:
       - "9200"
@@ -69,25 +72,49 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.2
     container_name: kibana
+    restart: always
     volumes:
-      - ./config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - kibana-data:/usr/share/kibana/data
+      - kibana-logs:/usr/share/kibana/logs
+    configs:
+    - source: kibana-config
+      target: /usr/share/kibana/config/kibana.yml
     expose:
       - "5601"
     ports:
       - "5601:5601"
     networks:
       - elk
+    deploy:
+      resources:
+        limits:
+          memory: 1g
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.17.2
     container_name: logstash
+    restart: always
     volumes:
-      - ./config/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./config/logstash/pipeline.conf:/usr/share/logstash/pipeline/pipeline.conf
+    - logstash-data-1:/usr/share/logstash/data
+    - logstash-logs-1:/usr/share/logstash/logs
+    configs:
+    - source: logstash-config-1
+      target: /usr/share/logstash/config/logstash.yml
+    - source: logstash-pipeline-config-1
+      target: /usr/share/logstash/config/pipeline.yml
+    - source: logstash-agent-1
+      target: /usr/share/logstash/pipeline
     expose:
       - "5044"
+      - "5045"
+      - "5046"
     networks:
       - elk
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '1'
 
   # prometheus:
   #   image: prom/prometheus:latest
@@ -116,18 +143,41 @@ networks:
     name: elk
   
 volumes:
-  elasticsearch_master_1:
+  es-master-data-1:
     driver: local
-  elasticsearch_data_1:
+  es-master-logs-1:
     driver: local
-  elasticsearch_data_2:
+  es-data-data-1:
+    driver: local
+  es-data-logs-1:
+    driver: local
+  es-data-data-2:
+    driver: local
+  es-data-logs-2:
+    driver: local
+  kibana-data:
+    driver: local
+  kibana-logs:
+    driver: local
+  logstash-data-1:
+    driver: local
+  logstash-logs-1:
     driver: local
 
 configs:
-  elasticsearch_master_1_config:
+  es-master-1-config:
     file: ./config/elasticsearch/master-1/elasticsearch.yml
-  elasticsearch_data_1_config:
+  es-data-1-config:
     file: ./config/elasticsearch/data-1/elasticsearch.yml
-  elasticsearch_data_2_config:
+  es-data-2-config:
     file: ./config/elasticsearch/data-2/elasticsearch.yml
+  kibana-config:
+    file: ./config/kibana/kibana.yml
+  logstash-config-1:
+    file: ./config/logstash/node-1/logstash.yml
+  logstash-pipeline-config-1:
+    file: ./config/logstash/node-1/pipeline.yml
+  logstash-agent-1:
+    file: ./config/logstash/node-1/agent
+
   
