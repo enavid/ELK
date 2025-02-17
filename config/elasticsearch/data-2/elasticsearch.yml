@@ -20,7 +20,7 @@ cluster.name: elk-cluster
 #
 # Use a descriptive name for the node:
 #
-node.name: elasticsearch-data-2
+node.name: es-data-2
 #
 # Add custom attributes to the node:
 node.roles: [ data ]
@@ -53,7 +53,7 @@ path.logs: /usr/share/elasticsearch/logs
 # By default Elasticsearch is only accessible on localhost. Set a different
 # address here to expose this node on the network:
 #
-network.host: elasticsearch-data-2
+network.host: es-data-2
 #
 # By default Elasticsearch listens for HTTP traffic on the first free port it
 # finds starting at 9200. Set a specific HTTP port here:
@@ -67,12 +67,12 @@ http.port: 9200
 # Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.seed_hosts: ["elasticsearch-master-1", "elasticsearch-data-1"]
+discovery.seed_hosts: ["es-master-1", "es-data-1"]
 
 #
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
-cluster.initial_master_nodes: ["elasticsearch-master-1"]
+cluster.initial_master_nodes: ["es-master-1"]
 #
 # For more information, consult the discovery and cluster formation module documentation.
 #
