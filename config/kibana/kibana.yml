@@ -139,7 +139,7 @@ logging:
 
 # =================== System: Other ===================
 # The path where Kibana stores persistent data not saved in Elasticsearch. Defaults to data
-#path.data: data
+path.data: /usr/share/kibana/data
 
 # Specifies the path where Kibana creates the process ID file.
 pid.file: /usr/share/kibana/kibana.pid
